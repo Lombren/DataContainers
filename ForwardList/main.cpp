@@ -8,24 +8,34 @@ class Element
 {
 	int Data;
 	Element* pNext;
+	static int count;
 public:
+	const int& getData() const
+	{
+		return this->Data;
+	}
 	Element(int Data, Element* pNext = nullptr)
 	{
 		this->Data = Data;
 		this->pNext = pNext;
+		count++;
 		cout << "EConstructor:\t" << this << endl;
 	}
 	~Element()
 	{
+		count--;
 		cout << "EDestructor:\t" << this << endl;
 	}
 	friend class ForwardList;
 };
 
+int Element::count = 0;
+
 class ForwardList
 {
 	Element* Head;
 public:
+
 	ForwardList()
 	{
 		this->Head = nullptr;
@@ -40,42 +50,73 @@ public:
 	//			Adding elements:
 	void push_front(int Data)
 	{
-		//Добавляет значение в начало списка.
-		//1)Создаем элемент, в который будет помещено добавляемое значение (Data).
-		Element* New = new Element(Data);
-		//2)"Пристыковываем" новый элемент к началу списка:
-		New->pNext = Head;
-		Head = New;
+		////Добавляет значение в начало списка.
+		////1)Создаем элемент, в который будет помещено добавляемое значение (Data).
+		//Element* New = new Element(Data);
+		////2)"Пристыковываем" новый элемент к началу списка:
+		//New->pNext = Head;
+		//Head = New;
+		Head = new Element(Data, Head);
 	}
 	//удаляет элемент с начала списка:
 	void pop_front()
 	{
-		Element* Temp = Head->pNext;
-		Head = Temp;
+		Element* Temp = Head;//запоминаем адресс удаляемого елемента
+		Head = Head->pNext;//исключаем елемент из списка
+		delete Temp;//Удаляем елемент из памяти
+
+
 
 	}
 	//удаляет последний элемент списка:
 	void pop_back()
 	{
-		Element* Temp = Head;
-		int i = 0;
-		for (; Temp->pNext != nullptr; Temp = Temp->pNext)
+		if (Head == nullptr)return;
+		if (Head->pNext == nullptr)
 		{
-			i++;
+			pop_front();
+			return;
 		}
-		Element* Temp1 = Head;
-		for (int x = 0; x < i - 1; x++, Temp1 = Temp1->pNext);
-		Temp1->pNext = nullptr;
-
+		Element* Temp = Head;
+		while (Temp->pNext->pNext != nullptr)
+		{
+			Temp = Temp->pNext;
+		}
+		delete Temp->pNext;
+		Temp->pNext = nullptr;
 	}
 	void insert(int Index, int Data)
 	{
+		if (Index == 0)
+		{
+			push_front(Data);
+			return;
+		}
 		if (Head == nullptr)
 		{
 			push_front(Data);
 			return;
 		}
+		Element* Temp = Head;
+		for (int i = 0; i < Index - 1; i++)
+		{
+			if (Temp->pNext == nullptr)break;
+			Temp = Temp->pNext;
+		}
 
+		/*Element* New = new Element(Data);
+		New->pNext = Temp->pNext;
+		Temp->pNext = New;*/
+		Temp->pNext = new Element(Data, Temp->pNext);
+	}
+	void erase(int Index)
+	{
+		Element* Temp = Head;
+		for (int i = 0; i < Index - 1; i++)
+		{
+			if (Temp->pNext == nullptr)break;
+			Temp = Temp->pNext;
+		}
 
 	}
 	void push_back(int Data)
@@ -93,16 +134,22 @@ public:
 		Temp->pNext = new Element(Data);
 	}
 
+
 	void print()
 	{
-		Element* Temp = Head;	//Temp - это итератор.
+		//Element* Temp = Head;	//Temp - это итератор.
 		//Итератор - это УКАЗАТЕЛЬ, при помощи которого 
 		//можно получить доступ к элементам структуры данных.
-		while (Temp != nullptr)
+		/*while (Temp != nullptr)
 		{
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext;	//Переходим на следующий элемент.
+		}*/
+		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+		{
+			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		}
+		cout << "Кол-во элементов списка: " << Element::count << endl;
 	}
 };
 
@@ -126,5 +173,16 @@ void main()
 	fl.pop_back();
 	fl.print();
 	cout << delimiter;
+	int Index;
+	int Data;
+	cout << "Введите индекс добавляемого элемента: "; cin >> Index;
+	cout << "Введите значение добавляемого элемента: "; cin >> Data;
+	fl.insert(Index, Data);
+	fl.print();
+	cout << "Введите индекс удаляемого элемента: "; cin >> Index;
+	fl.erase(Index);
+	fl.print();
+
+
 
 }
