@@ -8,6 +8,7 @@ using namespace std;
 //#define INDEX_OPERATOR_CHECK
 //#define CONSTRUCTORS_CHECK
 #define OPERATORS_CHECK
+
 class Element
 {
 	int Data;
@@ -28,15 +29,23 @@ public:
 #endif // DEBUG
 
 	}
+	Element operator++(int)
+	{
+		Element* Temp;
+		Temp = this;
+		this->Temp = Temp->pNext;
+		return *this;
+	}
 	~Element()
 	{
-		count--; 
+		count--;
 #ifdef DEBUG
 		cout << "EDestructor:\t" << this << endl;
 #endif // DEBUG
 
 	}
 	friend class ForwardList;
+	friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
 };
 
 int Element::count = 0;
@@ -55,15 +64,52 @@ public:
 		this->Head = nullptr;
 		this->size = 0;
 		//Изначально создаем пустой список.
-		cout << "FLConstructor:\t" << this << endl;
+		cout << "FLConstructor:\t\t" << this << endl;
 	}
-	ForwardList(int size):ForwardList()
+	ForwardList(const ForwardList& other)
+	{
+		this->Head = nullptr;
+		this->size = 0;
+		//Element* Temp = other.Head;//Iterator для перемещения по другому списку
+		//while (Temp)
+		//{
+		//	push_back(Temp->Data);
+		//	Temp = Temp->pNext;
+		//}
+		for (Element* Temp = other.Head; Temp; Temp = Temp->pNext)push_back(Temp->Data);
+		cout << "FLCopyConstructor:\t" << this << endl;
+	}
+	ForwardList(ForwardList&& other)
+	{
+		this->Head = other.Head;
+		this->size = other.size;
+		other.Head = nullptr;
+		cout << "FLMoveConstructor:\t" << this << endl;
+	}
+	ForwardList& operator=(const ForwardList& other)
+	{
+		if (this == &other)return *this;
+		while (Head)pop_front();
+		for (Element* Temp = other.Head; Temp; Temp = Temp->pNext)push_back(Temp->Data);
+		cout << "FLCopyAssigment:\t" << this << endl;
+		return *this;
+	}
+	ForwardList& operator=(ForwardList&& other)
+	{
+		this->Head = other.Head;
+		this->size = other.size;
+		other.Head = nullptr;
+		cout << "FLMoveAssigment:\t" << this << endl;
+		return *this;
+	}
+	
+	ForwardList(int size) :ForwardList()
 	{
 		/*this->Head = nullptr;
 		this->size = 0;*/
 		while (size--)push_front(int());
 	}
-	ForwardList(initializer_list<int> il):ForwardList()
+	ForwardList(initializer_list<int> il) :ForwardList()
 	{
 		//cout << typeid(il.begin()).name() << endl;
 		for (int const* it = il.begin(); it != il.end(); it++)
@@ -72,10 +118,11 @@ public:
 		}
 
 	}
+
 	~ForwardList()
 	{
 		while (Head)pop_front();
-		cout << "FLDestructor:\t" << this << endl;
+		cout << "FLDestructor:\t\t" << this << endl;
 	}
 
 	//			Adding elements:
@@ -160,11 +207,11 @@ public:
 			if (Temp->pNext == nullptr)break;
 			Temp = Temp->pNext;
 		}
-		Element* toDel=Temp->pNext;
+		Element* toDel = Temp->pNext;
 		Temp->pNext = Temp->pNext->pNext;
 		delete toDel;
 		size--;
-		
+
 	}
 	void push_back(int Data)
 	{
@@ -204,7 +251,14 @@ public:
 		}
 		cout << "Кол-во элементов списка: " << size << endl;
 	}
+	friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
 };
+ForwardList operator+(const ForwardList& left,const ForwardList& right)
+{
+	ForwardList result=left;
+	for (Element* Temp = right.Head; Temp; Temp = Temp->pNext)result.push_back(Temp->Data);
+	return result;
+}
 
 void main()
 {
@@ -244,7 +298,7 @@ void main()
 	for (int i = 0; i < n; i++)
 	{
 		chain.push_front(rand() % 100);
-	}
+}
 	//chain.print();
 	cout << "List Full" << endl;
 #endif // DESTRUCTOR_CHECK
@@ -276,7 +330,7 @@ void main()
 	ForwardList fl2 = { 34,55,89 };
 	for (int i = 0; i < fl1.get_size(); i++)
 	{
-		cout << fl1[i] <<tab;
+		cout << fl1[i] << tab;
 	}
 	cout << endl;
 	for (int i = 0; i < fl2.get_size(); i++)
