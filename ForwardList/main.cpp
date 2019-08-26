@@ -7,51 +7,87 @@ using namespace std;
 //#define DESTRUCTOR_CHECK
 //#define INDEX_OPERATOR_CHECK
 //#define CONSTRUCTORS_CHECK
-#define OPERATORS_CHECK
+//#define OPERATORS_CHECK
+#define RANGE_BASED_FOR
 
-class Element
-{
-	int Data;
-	Element* pNext;
-	static int count;
-public:
-	const int& getData() const
-	{
-		return this->Data;
-	}
-	Element(int Data, Element* pNext = nullptr)
-	{
-		this->Data = Data;
-		this->pNext = pNext;
-		count++;
-#ifdef DEBUG
-		cout << "EConstructor:\t" << this << endl;
-#endif // DEBUG
 
-	}
-	Element operator++(int)
-	{
-		Element* Temp;
-		Temp = this;
-		this->Temp = Temp->pNext;
-		return *this;
-	}
-	~Element()
-	{
-		count--;
-#ifdef DEBUG
-		cout << "EDestructor:\t" << this << endl;
-#endif // DEBUG
 
-	}
-	friend class ForwardList;
-	friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
-};
-
-int Element::count = 0;
 
 class ForwardList
 {
+	class Element
+	{
+		int Data;
+		Element* pNext;
+		static int count;
+	public:
+		const int& getData() const
+		{
+			return this->Data;
+		}
+		Element(int Data, Element* pNext = nullptr)
+		{
+			this->Data = Data;
+			this->pNext = pNext;
+			count++;
+#ifdef DEBUG
+			cout << "EConstructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		~Element()
+		{
+			count--;
+#ifdef DEBUG
+			cout << "EDestructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		friend class ForwardList;
+		friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
+	};
+	class Iterator 
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp) :Temp(Temp)
+		{
+#ifdef DEBUG
+			cout << "itConstructor:\t\t" << this << endl;
+#endif // DEBUG
+
+		};
+		~Iterator()
+		{ 
+#ifdef DEBUG
+			cout << "itDestructor:\t\t" << this << endl;
+#endif // DEBUG
+
+		};
+		Element*& operator++()
+		{
+			Temp = Temp->pNext;
+		}
+		Element* operator++(int)
+		{
+			Element* old = Temp;
+			Temp = Temp->pNext;
+			return old;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+		bool operator==(const Iterator& other)
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const Iterator& other)
+		{
+			return this->Temp != other.Temp;
+		}
+
+	};
 	Element* Head;
 	int size;
 public:
@@ -76,7 +112,7 @@ public:
 		//	push_back(Temp->Data);
 		//	Temp = Temp->pNext;
 		//}
-		for (Element* Temp = other.Head; Temp; Temp = Temp->pNext)push_back(Temp->Data);
+		for (Iterator Temp = other.Head; Temp!=nullptr; Temp++)push_back(*Temp);
 		cout << "FLCopyConstructor:\t" << this << endl;
 	}
 	ForwardList(ForwardList&& other)
@@ -253,10 +289,12 @@ public:
 	}
 	friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
 };
+int ForwardList::Element::count = 0;
+
 ForwardList operator+(const ForwardList& left,const ForwardList& right)
 {
 	ForwardList result=left;
-	for (Element* Temp = right.Head; Temp; Temp = Temp->pNext)result.push_back(Temp->Data);
+	for (ForwardList::Element* Temp = right.Head; Temp; Temp = Temp->pNext)result.push_back(Temp->Data);
 	return result;
 }
 
@@ -344,6 +382,19 @@ void main()
 	fl3.print();
 
 #endif // OPERATORS_CHECK
+#ifdef RANGE_BASED_FOR
 
+
+	int Arr[] = { 3,5,8,13,21 };
+	for (int i = 0; i < sizeof(Arr) / sizeof(int); i++)
+	{
+		cout << Arr[i] << tab;
+	}
+	cout << endl;
+	for (int i : Arr)cout << i << tab;cout << endl;
+
+	ForwardList fl = { 3,5,8,13,21 };
+	for (int i : fl)cout << i << tab; cout << endl;
+#endif // RANGE_BASED_FOR
 
 }
