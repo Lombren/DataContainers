@@ -15,6 +15,7 @@ using namespace std;
 
 class ForwardList
 {
+
 	class Element
 	{
 		int Data;
@@ -43,9 +44,14 @@ class ForwardList
 #endif // DEBUG
 
 		}
+		operator int()
+		{
+			return this->Data;
+		}
 		friend class ForwardList;
 		friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
 	};
+public:
 	class Iterator 
 	{
 		Element* Temp;
@@ -64,11 +70,12 @@ class ForwardList
 #endif // DEBUG
 
 		};
-		Element*& operator++()
+		Iterator& operator++()
 		{
 			Temp = Temp->pNext;
+			return *this;
 		}
-		Element* operator++(int)
+		Iterator operator++(int)
 		{
 			Element* old = Temp;
 			Temp = Temp->pNext;
@@ -88,12 +95,21 @@ class ForwardList
 		}
 
 	};
+private:
 	Element* Head;
 	int size;
 public:
 	const int get_size()
 	{
 		return this->size;
+	}
+	Iterator begin()
+	{
+		return Head;
+	}
+	Iterator end()
+	{
+		return nullptr;
 	}
 	ForwardList()
 	{
@@ -394,7 +410,13 @@ void main()
 	for (int i : Arr)cout << i << tab;cout << endl;
 
 	ForwardList fl = { 3,5,8,13,21 };
+	/*for (ForwardList::Iterator it = fl.begin(); it != fl.end(); it++)
+	{
+		cout << *it << endl;
+	}
+	cout << endl;*/
 	for (int i : fl)cout << i << tab; cout << endl;
+
 #endif // RANGE_BASED_FOR
 
 }
