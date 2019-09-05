@@ -2,6 +2,8 @@
 
 using namespace std;
 #define tab "\t"
+//#define BASE_CHECK
+#define CONSTRUCTORS_CHECK
 class List
 {
 	class Element
@@ -32,6 +34,7 @@ public:
 	}
 	~List()
 	{
+		while (Head)pop_front();
 		cout << "LDestructor:\t\t" << this << endl;
 	}
 
@@ -65,11 +68,17 @@ public:
 	}
 	void insert(int index,int Data)
 	{
-		
-		Element* New = new Element(Data);
+		if (index == 0)
+		{
+			push_front(Data); return;
+		}
+		if (index >= size)
+		{
+			push_back(Data); return;
+		}
 		if (Head == nullptr&&Tail == nullptr)
 		{
-			Head = Tail = New;
+			push_front(Data);
 			return;
 		}
 		Element* Temp;
@@ -77,36 +86,83 @@ public:
 		{
 			Temp = Tail;
 			for (int i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;
-			//{
-			//	/*if (i == index - 1)
-			//	{
-			//		Temp->pPrev = New;
-			//		New->pPrev = Temp->pPrev->pPrev;
-			//		New->pNext = Temp;
-			//		
-			//	}*/
-			//}
+			
 			
 		}
 		else
 		{
 			Temp = Head;
 			for (int i = 0; i < index; i++)Temp = Temp->pNext;
-			//{
-			//	/*if (i == index - 1)
-			//	{
-			//		Temp->pNext = New;
-			//		New->pNext = Temp->pNext->pNext;
-			//		New->pPrev = Temp;
-			//		
-			//	}*/
-			//}
+			
 		}
+		/*Element* New = new Element(Data);
 		New->pNext = Temp;
 		New->pPrev = Temp->pPrev;
 		Temp->pPrev->pNext = New;
-		Temp->pPrev = New;
+		Temp->pPrev = New;*/
+		Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
 		size++;
+	}
+	void pop_front()
+	{
+		if (Head == Tail)
+		{
+			delete Head;
+			Head = Tail = nullptr;
+			return;
+		}
+		Head = Head->pNext;
+		delete Head->pPrev;
+		Head->pPrev = nullptr;
+		size--;
+	}
+	void pop_back()
+	{
+		if (Head == Tail)
+		{
+			delete Tail;
+			 Tail= Head = nullptr;
+			return;
+		}
+		Tail = Tail->pPrev;
+		delete Tail->pNext;
+		Tail->pNext = nullptr;
+		size--;
+
+	}
+	void erase(int index)
+	{
+		if (index == 0)
+		{
+			pop_front(); return;
+		}
+		if (index >= size-1)
+		{
+			pop_back(); return;
+		}
+		if (Head == Tail)
+		{
+			delete Head;
+			Head = Tail = nullptr;
+			return;
+		}
+		if (Head == nullptr)return;
+		Element* Temp;
+		if (index > size / 2)
+		{
+			Temp = Tail;
+			for (int i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;
+		}
+		else
+		{
+			Temp = Head;
+			for (int i = 0; i < index; i++)Temp = Temp->pNext;
+		}
+		Temp->pNext->pPrev = Temp->pPrev;
+		Temp->pPrev->pNext = Temp->pNext;
+		delete Temp;
+		size--;
+
 	}
 	void print()
 	{
@@ -129,6 +185,7 @@ void main()
 {
 	setlocale(LC_ALL, "");
 	int n=5;
+#ifdef BASE_CHECK
 	int index=0;
 	int Data;
 	cout << "¬ведите размер списка: "; cin >> n;
@@ -144,9 +201,34 @@ void main()
 	//list.push_front(123123);
 	cout << "¬ведите номер добавл€емого елемента: "; cin >> index;
 	cout << "¬ведите значение добавл€емого елемента: "; cin >> Data;
-	list.insert(index,Data);
+	list.insert(index, Data);
 	list.print();
-	list.print_reverss();
+	list.pop_front();
+	list.print();
+	list.pop_back();
+	list.print();
+	//list.print_reverss();Done
+	cout << "¬ведите номер удал€емого елемента: "; cin >> index;
+	list.erase(index);
+	list.print();
+#endif // BASE_CHECK
+#ifdef CONSTRUCTORS_CHECK
+
+	List lst1 = { 3,5,8,13,21 };
+	for (int i = 0; i < lst1.get_size(); i++)cout << lst1[i] << tab; cout << endl;
+	List lst2 = { 34,55,89 };
+	for (int i = 0; i < lst2.get_size(); i++)cout << lst2[i] << tab; cout << endl;
+	List lst3 = lst1 + lst2;
+	for (int i : lst3)
+	{
+		cout << i << tab;
+	}
+	cout << endl;
+
+#endif // CONSTRUCTORS_CHECK
+
+
+
 
 
 }
