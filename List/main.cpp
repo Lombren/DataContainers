@@ -12,7 +12,7 @@ class List
 		Element* pNext;
 		Element* pPrev;
 	public:
-		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data),pNext(pNext),pPrev(pPrev)
+		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
 		{
 			cout << "EConstructor:\t\t" << this << endl;
 		}
@@ -20,22 +20,136 @@ class List
 		{
 			cout << "EDestructor:\t\t" << this << endl;
 		}
+
+		/*int operator*()
+		{
+			return this->Data;
+		}
+		const int operator*() const
+		{
+			return this->Data;
+		}*/
+		operator int()
+		{
+			return this->Data;
+		}
+
 		friend class List;
 	};
 	Element* Head;
 	Element* Tail;
 	int size;
 public:
+	class Iterator
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr)
+		{
+			this->Temp = Temp;
+			cout << "ITConstructor:\t\t" << this << endl;
+		}
+		~Iterator()
+		{
+			cout << "ITDestructor:\t\t" << this << endl;
+		}
+
+		Iterator& operator++()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+
+		int& operator* ()
+		{
+			return Temp->Data;
+		}
+		const int& operator* () const
+		{
+			return Temp->Data;
+		}
+
+		bool operator==(const Iterator& other)
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const Iterator& other)
+		{
+			return this->Temp != other.Temp;
+		}
+
+	};
+	int get_size()
+	{
+		return this->size;
+	}
+	Iterator begin()
+	{
+		return this->Head;
+	}
+	const Iterator begin() const
+	{
+		return this->Head;
+	}
+	const Iterator end() const
+	{
+		return nullptr;
+	}
+	Iterator end()
+	{
+		return nullptr;
+	}
+
 	List()
 	{
 		Head = Tail = nullptr;
 		size = 0;
 		cout << "LConstructor:\t\t" << this << endl;
 	}
+	List(initializer_list<int> il) :List()
+	{
+		for (const int* it = il.begin(); it != il.end(); it++)
+		{
+			push_back(*it);
+		}
+	}
 	~List()
 	{
 		while (Head)pop_front();
 		cout << "LDestructor:\t\t" << this << endl;
+	}
+	//Operators
+	int& operator[](int index)
+	{
+		Element* Temp;
+		if (index < size / 2)
+		{
+			Temp = Head;
+			for (int i = 0; i < index; i++)Temp = Temp->pNext;
+		}
+		else
+		{
+			Temp = Tail;
+			for (int i = size-1; i > index; i--)Temp = Temp->pPrev;
+		}
+		return Temp->Data;
+
+	}
+	const int& operator[](int index) const
+	{
+		Element* Temp;
+		if (index < size / 2)
+		{
+			Temp = Head;
+			for (int i = 0; i < index; i++)Temp = Temp->pNext;
+		}
+		else
+		{
+			Temp = Tail;
+			for (int i = size - 1; i > index; i--)Temp = Temp->pPrev;
+		}
+		return Temp->Data;
+
 	}
 
 	//Methods
@@ -66,7 +180,7 @@ public:
 		Tail->pNext = New;
 		Tail = New;
 	}
-	void insert(int index,int Data)
+	void insert(int index, int Data)
 	{
 		if (index == 0)
 		{
@@ -86,14 +200,14 @@ public:
 		{
 			Temp = Tail;
 			for (int i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;
-			
-			
+
+
 		}
 		else
 		{
 			Temp = Head;
 			for (int i = 0; i < index; i++)Temp = Temp->pNext;
-			
+
 		}
 		/*Element* New = new Element(Data);
 		New->pNext = Temp;
@@ -121,7 +235,7 @@ public:
 		if (Head == Tail)
 		{
 			delete Tail;
-			 Tail= Head = nullptr;
+			Tail = Head = nullptr;
 			return;
 		}
 		Tail = Tail->pPrev;
@@ -136,7 +250,7 @@ public:
 		{
 			pop_front(); return;
 		}
-		if (index >= size-1)
+		if (index >= size - 1)
 		{
 			pop_back(); return;
 		}
@@ -166,16 +280,16 @@ public:
 	}
 	void print()
 	{
-		
-		for(Element* Temp = Head;Temp;Temp=Temp->pNext)
+
+		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
 		{
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		}
-		cout <<"В списке "<< size << " елементов."<<endl;
+		cout << "В списке " << size << " елементов." << endl;
 	}
 	void print_reverss()
 	{
-		for(Element* Temp=Tail;Temp;Temp=Temp->pPrev)
+		for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "В списке " << size << " елементов." << endl;
 	}
@@ -184,9 +298,9 @@ public:
 void main()
 {
 	setlocale(LC_ALL, "");
-	int n=5;
+	int n = 5;
 #ifdef BASE_CHECK
-	int index=0;
+	int index = 0;
 	int Data;
 	cout << "Введите размер списка: "; cin >> n;
 	List list;
@@ -215,15 +329,22 @@ void main()
 #ifdef CONSTRUCTORS_CHECK
 
 	List lst1 = { 3,5,8,13,21 };
-	for (int i = 0; i < lst1.get_size(); i++)cout << lst1[i] << tab; cout << endl;
-	List lst2 = { 34,55,89 };
+	/*lst1.print();*/
+	//for (int i = 0; i < lst1.get_size(); i++)lst1[i] = rand() % 100;
+	//for (int i = 0; i < lst1.get_size(); i++)cout << lst1[i] << tab; cout << endl;
+
+	for (int i : lst1)
+	{
+		cout << i << tab;
+	}
+	/*List lst2 = { 34,55,89 };
 	for (int i = 0; i < lst2.get_size(); i++)cout << lst2[i] << tab; cout << endl;
 	List lst3 = lst1 + lst2;
 	for (int i : lst3)
 	{
 		cout << i << tab;
 	}
-	cout << endl;
+	cout << endl;*/
 
 #endif // CONSTRUCTORS_CHECK
 
