@@ -38,7 +38,7 @@ void main()
 #endif // BASE_CHECK
 #ifdef CONSTRUCTORS_CHECK
 
-	List lst1 = { 3,5,8,13,21 };
+	List<int> lst1 = { 3,5,8,13,21 };
 	/*lst1.print();*/
 	//for (int i = 0; i < lst1.get_size(); i++)lst1[i] = rand() % 100;
 	//for (int i = 0; i < lst1.get_size(); i++)cout << lst1[i] << tab; cout << endl;

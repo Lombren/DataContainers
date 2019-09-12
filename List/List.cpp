@@ -1,91 +1,99 @@
 #include"List.h";
 
-List::Element::Element(int Data, Element* pNext, Element* pPrev) :Data(Data), pNext(pNext), pPrev(pPrev)
+template<typename T>template<typename E>List<T>::Element<E>::Element(E Data, List<T>::Element<E>* pNext, List<T>::Element<E>* pPrev) :Data(Data), pNext(pNext), pPrev(pPrev)
 {
 	cout << "EConstructor:\t\t" << this << endl;
 }
-List::Element::~Element()
+template<typename T>template<typename E>List<T>::Element<E>::~Element()
 {
 	cout << "EDestructor:\t\t" << this << endl;
 }
+template<typename T>
+template<typename E>
+List<T>::Element<E>::operator E&()
+{
+	return this->Data;
+}
 
-List::Iterator::Iterator(Element* Temp)
+
+template<typename T>List<T>::Iterator::Iterator(Element<T>* Temp)
 {
 	this->Temp = Temp;
 	cout << "ITConstructor:\t\t" << this << endl;
 }
-List::Iterator::~Iterator()
+template<typename T>List<T>::Iterator::~Iterator()
 {
 	cout << "ITDestructor:\t\t" << this << endl;
 }
 
-List::Iterator& List::Iterator::operator++()
+template<typename T>List<T>::Iterator& List<T>::Iterator::operator++()
 {
 	Temp = Temp->pNext;
 	return *this;
 }
 
-int& List::Iterator::operator* ()
+template<typename T>T& List<T>::Iterator::operator* ()
 {
 	return Temp->Data;
 }
-const int& List::Iterator::operator* () const
+template<typename T>const T& List<T>::Iterator::operator* () const
 {
 	return Temp->Data;
 }
 
-bool List::Iterator::operator==(const Iterator& other)
+
+template<typename T>bool List<T>::Iterator::operator==(const Iterator& other)
 {
 	return this->Temp == other.Temp;
 }
-bool List::Iterator::operator!=(const Iterator& other)
+template<typename T>bool List<T>::Iterator::operator!=(const Iterator& other)
 {
 	return this->Temp != other.Temp;
 }
 
-int List::get_size()
+template<typename T>int List<T>::get_size()
 {
 	return this->size;
 }
-List::Iterator List::begin()
+template<typename T>List<T>::Iterator List<T>::begin()
 {
 	return this->Head;
 }
-const List::Iterator List::begin() const
+template<typename T>const List<T>::Iterator List<T>::begin() const
 {
 	return this->Head;
 }
-const List::Iterator List::end() const
+template<typename T>const List<T>::Iterator List<T>::end() const
 {
 	return nullptr;
 }
-List::Iterator List::end()
+template<typename T>List<T>::Iterator List<T>::end()
 {
 	return nullptr;
 }
 
-List::List()
+template<typename T>List<T>::List()
 {
 	Head = Tail = nullptr;
 	size = 0;
 	cout << "LConstructor:\t\t" << this << endl;
 }
-List::List(initializer_list<int> il) :List()
+template<typename T>List<T>::List(initializer_list<T> il) :List()
 {
-	for (const int* it = il.begin(); it != il.end(); it++)
+	for (const T* it = il.begin(); it != il.end(); it++)
 	{
 		push_back(*it);
 	}
 }
-List::~List()
+template<typename T>List<T>::~List()
 {
 	while (Head)pop_front();
 	cout << "LDestructor:\t\t" << this << endl;
 }
 //Operators
-int& List::operator[](int index)
+template<typename T> T& List<T>::operator[](int index)
 {
-	Element* Temp;
+	Element<T>* Temp;
 	if (index < size / 2)
 	{
 		Temp = Head;
@@ -99,9 +107,9 @@ int& List::operator[](int index)
 	return Temp->Data;
 
 }
-const int& List::operator[](int index) const
+template<typename T>const T& List<T>::operator[](int index) const
 {
-	Element* Temp;
+	Element<T>* Temp;
 	if (index < size / 2)
 	{
 		Temp = Head;
@@ -118,10 +126,10 @@ const int& List::operator[](int index) const
 
 //Methods
 
-void List::push_front(int Data)
+template<typename T>void List<T>::push_front(T Data)
 {
 	size++;
-	Element* New = new Element(Data);
+	Element<T>* New = new Element(Data);
 	if (Head == nullptr&&Tail == nullptr)
 	{
 		Head = Tail = New;
@@ -131,10 +139,10 @@ void List::push_front(int Data)
 	Head->pPrev = New;
 	Head = New;
 }
-void List::push_back(int Data)
+template<typename T>void List<T>::push_back(T Data)
 {
 	size++;
-	Element* New = new Element(Data);
+	Element<T>* New = new Element(Data);
 	if (Head == nullptr&&Tail == nullptr)
 	{
 		Head = Tail = New;
@@ -144,7 +152,7 @@ void List::push_back(int Data)
 	Tail->pNext = New;
 	Tail = New;
 }
-void List::insert(int index, int Data)
+template<typename T>void List<T>::insert(int index, T Data)
 {
 	if (index == 0)
 	{
@@ -159,7 +167,7 @@ void List::insert(int index, int Data)
 		push_front(Data);
 		return;
 	}
-	Element* Temp;
+	Element<T>* Temp;
 	if (index > size / 2)
 	{
 		Temp = Tail;
@@ -181,7 +189,7 @@ void List::insert(int index, int Data)
 	Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
 	size++;
 }
-void List::pop_front()
+template<typename T>void List<T>::pop_front()
 {
 	if (Head == Tail)
 	{
@@ -194,7 +202,7 @@ void List::pop_front()
 	Head->pPrev = nullptr;
 	size--;
 }
-void List::pop_back()
+template<typename T>void List<T>::pop_back()
 {
 	if (Head == Tail)
 	{
@@ -208,7 +216,7 @@ void List::pop_back()
 	size--;
 
 }
-void List::erase(int index)
+template<typename T>void List<T>::erase(int index)
 {
 	if (index == 0)
 	{
@@ -225,7 +233,7 @@ void List::erase(int index)
 		return;
 	}
 	if (Head == nullptr)return;
-	Element* Temp;
+	Element<T>* Temp;
 	if (index > size / 2)
 	{
 		Temp = Tail;
@@ -242,18 +250,18 @@ void List::erase(int index)
 	size--;
 
 }
-void List::print()
+template<typename T>void List<T>::print()
 {
 
-	for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+	for (Element<T>* Temp = Head; Temp; Temp = Temp->pNext)
 	{
 		cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 	}
 	cout << "В списке " << size << " елементов." << endl;
 }
-void List::print_reverss()
+template<typename T>void List<T>::print_reverss()
 {
-	for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
+	for (Element<T>* Temp = Tail; Temp; Temp = Temp->pPrev)
 		cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 	cout << "В списке " << size << " елементов." << endl;
 }

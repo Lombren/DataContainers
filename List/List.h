@@ -6,34 +6,35 @@ using namespace std;
 //#define BASE_CHECK
 #define CONSTRUCTORS_CHECK
 
-class List
-{
-	class Element
-	{
-		int Data;
-		Element* pNext;
-		Element* pPrev;
-	public:
-		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr);
-		~Element();
 
-		friend class List;
+template<typename T>class List
+{
+	template<typename T=T>class Element
+	{
+		T Data;
+		Element<T>* pNext;
+		Element<T>* pPrev;
+	public:
+		Element(T Data, Element<T>* pNext = nullptr, Element<T>* pPrev = nullptr);
+		~Element();
+		operator T&();
+		friend class List<T>;
 	};
-	Element* Head;
-	Element* Tail;
+	Element<T>* Head;
+	Element<T>* Tail;
 	int size;
 public:
 	class Iterator
 	{
-		Element* Temp;
+		Element<T>* Temp;
 	public:
-		Iterator(Element* Temp = nullptr);
+		Iterator(Element<T>* Temp = nullptr);
 		~Iterator();
 
 		Iterator& operator++();
 
-		int& operator* ();
-		const int& operator* () const;
+		T& operator* ();
+		const T& operator* () const;
 
 		bool operator==(const Iterator& other);
 		bool operator!=(const Iterator& other);
@@ -46,17 +47,17 @@ public:
 	Iterator end();
 
 	List();
-	List(initializer_list<int> il);
+	List(initializer_list<T> il);
 	~List();
 	//Operators
-	int& operator[](int index);
-	const int& operator[](int index) const;
+	T& operator[](int index);
+	const T& operator[](int index) const;
 
 	//Methods
 
-	void push_front(int Data);
-	void push_back(int Data);
-	void insert(int index, int Data);
+	void push_front(T Data);
+	void push_back(T Data);
+	void insert(int index, T Data);
 	void pop_front();
 	void pop_back();
 	void erase(int index);
