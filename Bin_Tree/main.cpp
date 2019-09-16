@@ -17,7 +17,7 @@ class Tree
 			this->pRight = pRight;
 			cout << "EConstructor:\t\t" << this << endl;
 
-		}
+		} 
 		~Element()
 		{
 			cout << "EDestructor:\t\t" << this << endl;
