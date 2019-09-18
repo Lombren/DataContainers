@@ -17,10 +17,14 @@ class Tree
 			this->pRight = pRight;
 			cout << "EConstructor:\t\t" << this << endl;
 
-		} 
+		}
 		~Element()
 		{
 			cout << "EDestructor:\t\t" << this << endl;
+		}
+		bool is_leaf()
+		{
+			return pLeft == pRight;
 		}
 		friend class Tree;
 	}*Root;
@@ -33,6 +37,10 @@ public:
 	{
 		Root = nullptr;
 		cout << "TConstructor:\t\t" << this << endl;
+	}
+	Tree(initializer_list<int>il):Tree()
+	{
+		for (int const* it = il.begin(); it != il.end(); it++) insert(*it);
 	}
 	~Tree()
 	{
@@ -103,6 +111,40 @@ public:
 			}
 		}
 	}
+	void erase(int Data)
+	{
+		erase(Data, this->Root);
+	}
+	void erase(int Data, Element*& Root)
+	{
+		if (Root == nullptr)return;
+		if (Data == Root->Data)
+		{
+			if (Root->is_leaf())
+			{
+				delete Root;
+				Root = nullptr;
+				return;
+			}
+			else
+			{
+				if (Root->pLeft)
+				{
+					Root->Data = getMaxValue(Root->pLeft);
+					erase(getMaxValue(Root->pLeft),Root->pLeft);
+				}
+				else
+				{
+					Root->Data = getMinValue(Root->pRight);
+					erase(getMinValue(Root->pRight), Root->pRight);
+				}
+				
+			}
+		}
+
+		erase(Data, Root->pLeft);
+		erase(Data, Root->pRight);
+	}
 	void clear()
 	{
 		clear(this->Root);
@@ -115,7 +157,20 @@ public:
 		clear(Root->pRight);
 		delete Root;
 	}
+	int Sum()
+	{
+		return Sum(this->Root);
+	}
+	int Sum(Element* Root)
+	{
+		if (Root == nullptr)return 0;
+		return Sum(Root->pLeft) + Sum(Root->pRight) + Root->Data;
+	}
+	double Avg()
+	{
+		return (double)Sum() / count();
 
+	}
 	void print()
 	{
 		print(this->Root);
@@ -135,6 +190,7 @@ void main()
 {
 	setlocale(LC_ALL, "");
 	int n;
+	int Data;
 	cout << "Введите размер дерева: "; cin >> n;
 	Tree tree;
 	for (int i = 0; i < n; i++)
@@ -147,4 +203,12 @@ void main()
 	//tree.clear();
 	//tree.print();
 	cout << "Количество элементов в дереве: " << tree.count() << endl;
+	cout << "Сумма элементов дерева: " << tree.Sum() << endl;
+	cout << "Среднее элементов дерева: " << tree.Avg() << endl;
+	cout << "Введите удаляемое значение: "; cin >> Data;
+	tree.erase(Data);
+	tree.print();
+	Tree tr2 = { 3,5,8,13,21 };
+	tr2.print();
+
 }
