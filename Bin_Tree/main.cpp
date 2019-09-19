@@ -2,6 +2,10 @@
 
 using namespace std;
 
+#define BASE_CHECK
+#define COPY_CONSTRUCTOR_CHECK
+
+
 class Tree
 {
 	class Element
@@ -42,11 +46,32 @@ public:
 	{
 		for (int const* it = il.begin(); it != il.end(); it++) insert(*it);
 	}
+	Tree(const Tree& other)
+	{
+		CopyTree(this->Root, other.Root);
+		cout << "TCopyConstructor:\t\t" << this << endl;
+	}
 	~Tree()
 	{
 		clear(this->Root);
 		cout << "TDestructor:\t\t" << this << endl;
 	}
+
+	void CopyTree(Element*& lRoot, Element* rRoot)
+	{
+		if (rRoot == nullptr)return;
+		lRoot = new Element(rRoot->Data);
+		CopyTree(lRoot->pLeft, rRoot->pLeft);
+		CopyTree(lRoot->pRight, rRoot->pRight);
+	}
+	Tree& operator=(const Tree& other)
+	{
+		clear();
+		CopyTree(this->Root,other.Root);
+		cout << "TCopyAssignment:\t\t" << this << endl;
+		return *this;
+	}
+
 	int getMinValue()
 	{
 		return getMinValue(this->Root);
@@ -208,7 +233,14 @@ void main()
 	cout << "¬ведите удал€емое значение: "; cin >> Data;
 	tree.erase(Data);
 	tree.print();
-	Tree tr2 = { 3,5,8,13,21 };
-	tr2.print();
+	/*Tree tr2 = { 3,5,8,13,21 };
+	tr2.print();*/
+
+	/*Tree tree2 = tree;
+	tree2.print();*/
+	Tree tree2;
+	tree2 = tree;
+	tree2.print();
+	
 
 }
