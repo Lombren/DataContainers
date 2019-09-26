@@ -3,6 +3,7 @@
 #include<vector>
 #include<deque>
 #include<forward_list>
+#include<list>
 
 using namespace std;
 using std::cout;
@@ -12,7 +13,8 @@ using std::cout;
 //#define STL_ARRAY
 //#define STL_VECTOR
 //#define STL_DEQUE
-#define STL_FORWARD_LIST
+//#define STL_FORWARD_LIST
+#define STL_LIST
 
 
 void main()
@@ -170,8 +172,56 @@ void main()
 #ifdef STL_FORWARD_LIST
 	forward_list<int> fl{ 3,5,8,13,21 };
 	cout << fl.max_size() << endl;
+	fl.insert_after(fl.before_begin(), { 0,1,1,2 });
+	int index;
+	int Data;
+	cout << "¬ведите номер добавл€емого елемента: "; std::cin >> index;
+	cout << "¬ведите значение добавл€емого елемента: "; std::cin >> Data;
+	forward_list<int>::iterator position = fl.before_begin()/*begin()*/;
+	for (int i = 0; i < index/* - 1*/; i++)position++;
+	fl.insert_after(position, Data);
+	
+
 	for (int i : fl)cout << i << tab; cout << endl;
 #endif // STL_FORWARD_LIST
+#ifdef STL_LIST
+
+	//list<int>mylist/*(5)*/{3,5,8,13,21};
+	//mylist.resize(8);
+	//cout << mylist.size() << endl;
+	///*cout << mylist.max_size() << endl;
+	//cout << forward_list<int>().max_size() << endl;*/
+	//for (int i : mylist)cout << i << tab; cout << endl;
+
+	/*list<int>list1 = { 3,5,8,13,21 };
+	list<int>list2 = { 34,55,89 };
+	for (int i : list1)cout << i << tab; cout << endl;
+	for (int i : list2)cout << i << tab; cout << endl;
+	list<int>::iterator position = list2.begin();
+	position++;
+	list1.splice(list1.end(), list2, position);
+	for (int i : list1)cout << i << tab; cout << endl;
+	for (int i : list2)cout << i << tab; cout << endl;*/
+	list<int> mylist(10);
+	for (list<int>::iterator it=mylist.begin();it!=mylist.end();it++)
+	{
+		*it = rand() % 10;
+		cout << *it << tab;
+	}
+	cout << endl;
+	cout << "size:" << tab << mylist.size() << endl;
+	//mylist.remove(4);
+	for (list<int>::iterator it = mylist.begin(); it != mylist.end(); it++)
+	{
+		/**it = rand() % 10;
+		cout << *it << tab;*/
+		mylist.remove_if([it](int num)->bool {return num % 2 == 0; });
+	}
+	for (int i : mylist)cout << i << tab; cout << endl;
+	cout << "size:" << tab << mylist.size() << endl;
+	
+
+#endif // STL_LIST
 
 
 
