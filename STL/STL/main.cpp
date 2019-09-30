@@ -1,9 +1,13 @@
 #include<iostream>
+#include<string>
+//Sequence containers:
 #include<array>
 #include<vector>
 #include<deque>
 #include<forward_list>
 #include<list>
+//Associative Conteiners:
+#include<map>
 
 using namespace std;
 using std::cout;
@@ -14,7 +18,11 @@ using std::cout;
 //#define STL_VECTOR
 //#define STL_DEQUE
 //#define STL_FORWARD_LIST
-#define STL_LIST
+//#define STL_LIST
+
+//Associative containers: 
+
+#define STL_MAP
 
 
 void main()
@@ -222,6 +230,30 @@ void main()
 	
 
 #endif // STL_LIST
+#ifdef STL_MAP
+	map<int,string>week=
+	{
+pair<int,string>(0,"Sunday"),
+pair<int,string>(1,"Monday"),
+pair<int,string>(2,"Tuesday"),
+pair<int,string>(3,"Wednesday"),
+pair<int,string>(4,"Thursday"),
+pair<int,string>(5,"Friday"),
+pair<int,string>(6,"Saturday")
+	};
+	for (map<int, string>::iterator it = week.begin(); it != week.end(); it++)
+	{
+		cout << it->first << tab << it->second << endl;
+	}
+	cout << delimiter;
+	for(pair<int,string> i : week)
+	{
+		cout << i.first << tab << i.second << endl;
+	}
+
+
+#endif // STL_MAP
+
 
 
 
