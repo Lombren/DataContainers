@@ -56,11 +56,19 @@ void main()
 #endif // STL_ARRAY
 #ifdef STL_VECTOR
 	vector<int> vec = { 0,1,1,2,3,5,8,13,21,34 };
-	for (int i = 0; i < vec.size(); i++)
+	try
 	{
-		cout << vec[i] << tab;
+		for (int i = 0; i < vec.size() * 2; i++)
+		{
+			//cout << vec[i] << tab;
+			cout << vec.at(i) << tab;
+		}
+		cout << endl;
 	}
-	cout << endl;
+	catch (const std::exception& e)
+	{
+		cerr<<e.what()<<endl;
+	}
 	cout << "Size:\t\t" << vec.size() << endl;
 	cout << "Capacity:\t" << vec.capacity() << endl;
 	cout << "max_size:\t" << vec.max_size() << endl;
