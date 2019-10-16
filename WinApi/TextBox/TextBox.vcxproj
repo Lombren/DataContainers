@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{3DE8D66D-BA71-49A9-8084-C3A919C2438B}</ProjectGuid>
+    <ProjectGuid>{E194FA2B-308A-42A5-BA6A-4C25811CB769}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>DialogBox</RootNamespace>
+    <RootNamespace>TextBox</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,12 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="biohazard_hazardous_hazard_biological-512.ico">
-      <DeploymentContent>false</DeploymentContent>
-    </Image>
-    <Image Include="biohazard_hazardous_hazard_biological-512.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
